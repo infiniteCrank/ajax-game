@@ -6,10 +6,10 @@ window.onload = function () {
     }
 
     preload() {
-      this.load.image('sky', 'assets/Back_City.png'); // Background
-      this.load.image('ground', 'assets/Platform.png'); // Ground
+      this.load.image('sky', 'assets/bg.png'); // Background
+      this.load.image('ground', 'assets/platform_real.png'); // Ground
       this.load.image('star', 'assets/coin.png'); // Star collectible
-      this.load.spritesheet('dude', 'assets/girl.jpeg', { frameWidth: 50, frameHeight: 50 }); // Player sprite
+      this.load.spritesheet('dude', 'assets/ajax_idle_run.png', { frameWidth: 100, frameHeight: 100 }); // Player sprite
       // Load button images
       this.load.image('leftButton', 'assets/left.png'); // Left button image
       this.load.image('rightButton', 'assets/right.png'); // Right button image
@@ -19,20 +19,20 @@ window.onload = function () {
     create() {
       this.add.image(400, 300, 'sky');
 
-      const platforms = this.physics.add.staticGroup();
+      this.platforms = this.physics.add.staticGroup();
       // Adjust these y-coordinates to move platforms down
-      platforms.create(200, 1600, 'ground').setScale(1).refreshBody();
-      platforms.create(400, 1400, 'ground').setScale(1).refreshBody();
-      platforms.create(600, 1200, 'ground').setScale(1).refreshBody();
-      platforms.create(800, 1000, 'ground').setScale(1).refreshBody();
-      platforms.create(1000, 900, 'ground').setScale(1).refreshBody();
+      this.platforms.create(200, 1600, 'ground').setScale(1).refreshBody();
+      this.platforms.create(400, 1450, 'ground').setScale(1).refreshBody();
+      this.platforms.create(600, 1300, 'ground').setScale(1).refreshBody();
+      this.platforms.create(800, 1150, 'ground').setScale(1).refreshBody();
+      // platforms.create(1000, 900, 'ground').setScale(1).refreshBody();
 
-      const player = this.physics.add.sprite(100, 600, 'dude'); // Move player down
+      this.player = this.physics.add.sprite(100, 1200, 'dude'); // Move player down
 
-      player.setBounce(0.5);
+      this.player.setBounce(0.5);
       //player.setCollideWorldBounds(true);
 
-      this.physics.add.collider(player, platforms);
+      this.physics.add.collider(this.player, this.platforms);
 
       const stars = this.physics.add.group({
         key: 'star',
@@ -44,32 +44,32 @@ window.onload = function () {
         star.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
       });
 
-      this.physics.add.collider(stars, platforms);
+      this.physics.add.collider(stars, this.platforms);
 
       // Collision detection between player and stars
-      this.physics.add.overlap(player, stars, this.collectStar, null, this);
+      this.physics.add.overlap(this.player, stars, this.collectStar, null, this);
 
       // Input handling
       this.input.keyboard.on('keydown-LEFT', () => {
-        player.setVelocityX(-160);
+        this.player.setVelocityX(-160);
       });
 
       this.input.keyboard.on('keydown-RIGHT', () => {
-        player.setVelocityX(160);
+        this.player.setVelocityX(160);
       });
 
       this.input.keyboard.on('keyup-LEFT', () => {
-        player.setVelocityX(0);
+        this.player.setVelocityX(0);
       });
 
       this.input.keyboard.on('keyup-RIGHT', () => {
-        player.setVelocityX(0);
+        this.player.setVelocityX(0);
       });
 
       // Jump logic
       this.input.keyboard.on('keydown-UP', () => {
-        if (player.body.touching.down) { // Ensure the character is on the ground
-          player.setVelocityY(-330);
+        if (this.player.body.touching.down) { // Ensure the character is on the ground
+          this.player.setVelocityY(-330);
         }
       });
 
@@ -79,22 +79,22 @@ window.onload = function () {
       const jumpButton = this.add.sprite(100, 650, 'jumpButton').setInteractive();
 
       leftButton.on('pointerdown', () => {
-        player.setVelocityX(-160);
+        this.player.setVelocityX(-160);
       });
       leftButton.on('pointerup', () => {
-        player.setVelocityX(0);
+        this.player.setVelocityX(0);
       });
 
       rightButton.on('pointerdown', () => {
-        player.setVelocityX(160);
+        this.player.setVelocityX(160);
       });
       rightButton.on('pointerup', () => {
-        player.setVelocityX(0);
+        this.player.setVelocityX(0);
       });
 
       jumpButton.on('pointerdown', () => {
-        if (player.body.touching.down) { // Ensure the character is on the ground
-          player.setVelocityY(-330);
+        if (this.player.body.touching.down) { // Ensure the character is on the ground
+          this.player.setVelocityY(-330);
         }
       });
 
@@ -117,10 +117,50 @@ window.onload = function () {
     }
 
     update() {
+      // Find the player's current position
+      const playerY = this.player.body.position.y;
 
+      // Retrieve all static bodies from the platforms group
+      const staticBodies = this.platforms.getChildren(); // Get all platforms
+
+      let highestPlatformY = Number.MAX_VALUE;
+      let highestPlatform = null;
+
+      // Iterate through all platforms to find the highest platform
+      staticBodies.forEach(platform => {
+        const platformY = platform.y; // Access the gameObject's y position
+        if (platformY < highestPlatformY) {
+          highestPlatformY = platformY;
+          highestPlatform = platform; // Keep track of the highest platform
+        }
+      });
+
+      // If the player has reached the highest platform
+      if (playerY < highestPlatformY - 300) {
+        // Remove all platforms except the highest platform
+        staticBodies.forEach(platform => {
+          if (platform !== highestPlatform) {
+            platform.destroy(); // Destroy other platforms
+          }
+        });
+
+        // Move the highest platform down to the bottom of the screen
+        if (highestPlatform.y != this.sys.game.config.height) {
+          console.log("highest platform")
+          console.log(highestPlatform.x)
+          let highestX = highestPlatform.x
+          highestPlatform.y = this.sys.game.config.height; // Set y coordinate to the bottom
+          highestPlatform.x = highestX;
+          highestPlatform.refreshBody(); // Refresh the body to apply changes
+        }
+
+        // Optional: Stop the player's movement here if needed
+      }
     }
 
   }
+
+
   const aspectRatio = 16 / 9; // Setting aspect ratio to 16:9
   const targetWidth = window.innerWidth * 0.9;
   const targetHeight = targetWidth * aspectRatio;
