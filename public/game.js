@@ -22,96 +22,59 @@ window.onload = function () {
     create() {
       this.add.image(400, 300, 'sky');
 
-      this.platforms = this.physics.add.staticGroup();
-      // Adjust these y-coordinates to move platforms down
-      this.platforms.create(200, 1600, 'ground').setScale(1).refreshBody();
-      this.platforms.create(400, 1450, 'ground').setScale(1).refreshBody();
-      this.platforms.create(600, 1300, 'ground').setScale(1).refreshBody();
-      this.platforms.create(800, 1150, 'ground').setScale(1).refreshBody();
-      this.platforms.create(800, 1150, 'ground').setScale(1).refreshBody();
-      this.player = this.physics.add.sprite(100, 1200, 'dude'); // Move player down
+      this.ground = this.matter.add.sprite(400, 1000, 'ground').setStatic(true).setScale(1);
 
-      this.player.setBounce(0.5);
+      // Add the player
+      this.player = this.matter.add.sprite(400, 450, 'dude');
+      this.player.setBounce(0.2);
 
-      this.physics.add.collider(this.player, this.platforms);
-      this.physics.add.collider(this.player, this.ramp);
-
-      const stars = this.physics.add.group({
-        key: 'star',
-        repeat: 5,
-        setXY: { x: 150, y: 0, stepX: 110 }
-      });
-
-      stars.children.iterate(star => {
-        star.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-      });
-
-      this.physics.add.collider(stars, this.platforms);
-
-      // Collision detection between player and stars
-      this.physics.add.overlap(this.player, stars, this.collectStar, null, this);
-
-      // Input handling
+      // Player movement controls
       this.input.keyboard.on('keydown-LEFT', () => {
-        this.player.setVelocityX(-160);
+        this.player.setVelocityX(-5);
       });
-
-      this.input.keyboard.on('keydown-RIGHT', () => {
-        this.player.setVelocityX(160);
-      });
-
       this.input.keyboard.on('keyup-LEFT', () => {
-        this.player.setVelocityX(0);
+        if (this.player.body.velocity.x < 0) {
+          this.player.setVelocityX(0);
+        }
       });
-
+      this.input.keyboard.on('keydown-RIGHT', () => {
+        this.player.setVelocityX(5);
+      });
       this.input.keyboard.on('keyup-RIGHT', () => {
-        this.player.setVelocityX(0);
-      });
-
-      // Jump logic
-      this.input.keyboard.on('keydown-UP', () => {
-        if (this.player.body.touching.down) { // Ensure the character is on the ground
-          this.player.setVelocityY(-330);
+        if (this.player.body.velocity.x > 0) {
+          this.player.setVelocityX(0);
         }
       });
+      // Input handling
+      this.input.keyboard.on('keydown-SPACE', this.jump, this);
 
-      // Create on-screen controls using images
-      const leftButton = this.add.sprite(50, 550, 'leftButton').setInteractive();
-      const rightButton = this.add.sprite(150, 550, 'rightButton').setInteractive();
-      const jumpButton = this.add.sprite(100, 650, 'jumpButton').setInteractive();
-
-      leftButton.on('pointerdown', () => {
-        this.player.setVelocityX(-160);
-      });
-      leftButton.on('pointerup', () => {
-        this.player.setVelocityX(0);
-      });
-
-      rightButton.on('pointerdown', () => {
-        this.player.setVelocityX(160);
-      });
-      rightButton.on('pointerup', () => {
-        this.player.setVelocityX(0);
+      // Add collision detection with the ground
+      this.matter.world.on('collisionstart', event => {
+        event.pairs.forEach(pair => {
+          if (pair.bodyA === this.player.body || pair.bodyB === this.player.body) {
+            this.isOnGround = true; // Player is on a platform
+          }
+        });
       });
 
-      jumpButton.on('pointerdown', () => {
-        if (this.player.body.touching.down) { // Ensure the character is on the ground
-          this.player.setVelocityY(-330);
-        }
+      this.matter.world.on('collisionend', event => {
+        event.pairs.forEach(pair => {
+          if (pair.bodyA === this.player.body || pair.bodyB === this.player.body) {
+            this.isOnGround = false; // Player is not on a platform
+          }
+        });
       });
 
-      // Initialize score text
-      this.scoreText = this.add.text(16, 16, 'Score: 0', {
-        fontSize: '32px',
-        fill: '#ffffff'
-      });
+    }
 
-      // Initialize score text
-      this.levelText = this.add.text(200, 16, 'Level: 1', {
-        fontSize: '32px',
-        fill: '#ffffff'
-      });
+    update() {
 
+    }
+
+    jump() {
+      if (this.isOnGround) { // Check if the player is on the ground before jumping
+        this.player.setVelocityY(-10); // Jump strength
+      }
     }
 
     // Function to collect a star
@@ -145,45 +108,6 @@ window.onload = function () {
       }
     }
 
-    update() {
-      // Find the player's current position
-      const playerY = this.player.body.position.y;
-
-      // Retrieve all static bodies from the platforms group
-      const staticBodies = this.platforms.getChildren(); // Get all platforms
-
-      let highestPlatformY = Number.MAX_VALUE;
-      let highestPlatform = null;
-
-      // Iterate through all platforms to find the highest platform
-      staticBodies.forEach(platform => {
-        const platformY = platform.y; // Access the gameObject's y position
-        if (platformY < highestPlatformY) {
-          highestPlatformY = platformY;
-          highestPlatform = platform; // Keep track of the highest platform
-        }
-      });
-
-      // If the player has reached the highest platform
-      if (playerY < highestPlatformY - 300) {
-        // Move the highest platform down to the bottom of the screen
-        if (highestPlatform.y != this.sys.game.config.height) {
-          highestPlatform.y = this.sys.game.config.height; // Set y coordinate to the bottom
-          highestPlatform.refreshBody(); // Refresh the body to apply changes
-          this.level++
-          this.levelText.setText('Level: ' + this.level); // Update displayed score
-          this.nextLevel()
-        }
-        // Remove all platforms except the highest platform
-        staticBodies.forEach(platform => {
-          if (platform !== highestPlatform) {
-            platform.destroy(); // Destroy other platforms
-          }
-        });
-
-      }
-    }
-
   }
 
 
@@ -204,7 +128,7 @@ window.onload = function () {
       createContainer: true,
     },
     physics: {
-      default: 'arcade',
+      default: 'matter',
       arcade: {
         gravity: { y: 300 },
         debug: false
