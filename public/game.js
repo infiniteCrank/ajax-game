@@ -3,17 +3,20 @@ window.onload = function () {
     constructor() {
       super({ key: "AjaxGame" });
       this.score = 0; // Initialize score
+      this.level = 0;
     }
 
     preload() {
       this.load.image('sky', 'assets/bg.png'); // Background
       this.load.image('ground', 'assets/platform_real.png'); // Ground
-      this.load.image('star', 'assets/coin.png'); // Star collectible
+      this.load.image('star', 'assets/wand.png'); // Star collectible
       this.load.spritesheet('dude', 'assets/ajax_idle_run.png', { frameWidth: 100, frameHeight: 100 }); // Player sprite
       // Load button images
       this.load.image('leftButton', 'assets/left.png'); // Left button image
       this.load.image('rightButton', 'assets/right.png'); // Right button image
       this.load.image('jumpButton', 'assets/jump.png'); // Jump button image
+      //obsticals 
+      this.load.image('ramp', 'assets/ramp.png'); // Jump button image
     }
 
     create() {
@@ -25,14 +28,13 @@ window.onload = function () {
       this.platforms.create(400, 1450, 'ground').setScale(1).refreshBody();
       this.platforms.create(600, 1300, 'ground').setScale(1).refreshBody();
       this.platforms.create(800, 1150, 'ground').setScale(1).refreshBody();
-      // platforms.create(1000, 900, 'ground').setScale(1).refreshBody();
-
+      this.platforms.create(800, 1150, 'ground').setScale(1).refreshBody();
       this.player = this.physics.add.sprite(100, 1200, 'dude'); // Move player down
 
       this.player.setBounce(0.5);
-      //player.setCollideWorldBounds(true);
 
       this.physics.add.collider(this.player, this.platforms);
+      this.physics.add.collider(this.player, this.ramp);
 
       const stars = this.physics.add.group({
         key: 'star',
@@ -104,6 +106,12 @@ window.onload = function () {
         fill: '#ffffff'
       });
 
+      // Initialize score text
+      this.levelText = this.add.text(200, 16, 'Level: 1', {
+        fontSize: '32px',
+        fill: '#ffffff'
+      });
+
     }
 
     // Function to collect a star
@@ -113,6 +121,27 @@ window.onload = function () {
         this.score += 10; // Update the score
         this.scoreText.setText('Score: ' + this.score); // Update displayed score
         console.log('Score:', this.score); // Output score to console
+      }
+    }
+
+    nextLevel() {
+      const level = this.level;
+      switch (level) {
+        case 2:
+          console.log('got to level 2');
+          this.platforms.create(200, 1450, 'ground').setScale(1).refreshBody();
+          this.platforms.create(800, 1450, 'ramp').setScale(1).refreshBody()
+
+          break;
+        case 3:
+          console.log('got to level 3');
+          break;
+        case 4:
+          console.log('got to level 4');
+          break;
+        default:
+          console.log('hit default');
+          break;
       }
     }
 
@@ -137,6 +166,14 @@ window.onload = function () {
 
       // If the player has reached the highest platform
       if (playerY < highestPlatformY - 300) {
+        // Move the highest platform down to the bottom of the screen
+        if (highestPlatform.y != this.sys.game.config.height) {
+          highestPlatform.y = this.sys.game.config.height; // Set y coordinate to the bottom
+          highestPlatform.refreshBody(); // Refresh the body to apply changes
+          this.level++
+          this.levelText.setText('Level: ' + this.level); // Update displayed score
+          this.nextLevel()
+        }
         // Remove all platforms except the highest platform
         staticBodies.forEach(platform => {
           if (platform !== highestPlatform) {
@@ -144,17 +181,6 @@ window.onload = function () {
           }
         });
 
-        // Move the highest platform down to the bottom of the screen
-        if (highestPlatform.y != this.sys.game.config.height) {
-          console.log("highest platform")
-          console.log(highestPlatform.x)
-          let highestX = highestPlatform.x
-          highestPlatform.y = this.sys.game.config.height; // Set y coordinate to the bottom
-          highestPlatform.x = highestX;
-          highestPlatform.refreshBody(); // Refresh the body to apply changes
-        }
-
-        // Optional: Stop the player's movement here if needed
       }
     }
 
@@ -190,3 +216,4 @@ window.onload = function () {
   // Start the Phaser game
   const game = new Phaser.Game(config);
 };
+
