@@ -1,2 +1,2 @@
-# ajax-game
-this is a game for 2025 game jam 
+# paper-doll-spelling
+a game that helps kids with their spelling words and earn paper dolls as rewards 
