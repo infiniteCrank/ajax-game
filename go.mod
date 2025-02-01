@@ -1,4 +1,4 @@
-module paper-doll-spelling
+module ajax-bubble-game
 
 go 1.23.4
 
