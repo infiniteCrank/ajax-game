@@ -20,20 +20,20 @@ window.onload = function () {
       platforms.create(200, 700, 'ground').setScale(1).refreshBody();
       platforms.create(400, 550, 'ground').setScale(1).refreshBody();
       platforms.create(600, 400, 'ground').setScale(1).refreshBody();
-      platforms.create(800, 300, 'ground').setScale(1).refreshBody();
-      platforms.create(900, 200, 'ground').setScale(1).refreshBody();
+      platforms.create(800, 250, 'ground').setScale(1).refreshBody();
+      platforms.create(1000, 100, 'ground').setScale(1).refreshBody();
 
       const player = this.physics.add.sprite(100, 450, 'dude');
 
-      player.setBounce(0.2);
-      player.setCollideWorldBounds(true);
+      player.setBounce(0.5);
+      //player.setCollideWorldBounds(true);
 
       this.physics.add.collider(player, platforms);
 
       const stars = this.physics.add.group({
         key: 'star',
         repeat: 5,
-        setXY: { x: 12, y: 0, stepX: 110 }
+        setXY: { x: 150, y: 0, stepX: 110 }
       });
 
       stars.children.iterate(star => {
