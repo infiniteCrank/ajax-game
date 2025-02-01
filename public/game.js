@@ -17,9 +17,11 @@ window.onload = function () {
       this.add.image(400, 300, 'sky');
 
       const platforms = this.physics.add.staticGroup();
-
-      platforms.create(400, 550, 'ground').setScale(1).refreshBody();
       platforms.create(200, 700, 'ground').setScale(1).refreshBody();
+      platforms.create(400, 550, 'ground').setScale(1).refreshBody();
+      platforms.create(600, 400, 'ground').setScale(1).refreshBody();
+      platforms.create(800, 300, 'ground').setScale(1).refreshBody();
+      platforms.create(900, 200, 'ground').setScale(1).refreshBody();
 
       const player = this.physics.add.sprite(100, 450, 'dude');
 
