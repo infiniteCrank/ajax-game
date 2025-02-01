@@ -22,10 +22,10 @@ window.onload = function () {
       const platforms = this.physics.add.staticGroup();
       // Adjust these y-coordinates to move platforms down
       platforms.create(200, 1600, 'ground').setScale(1).refreshBody();
-      platforms.create(400, 1450, 'ground').setScale(1).refreshBody();
+      platforms.create(400, 1400, 'ground').setScale(1).refreshBody();
       platforms.create(600, 1200, 'ground').setScale(1).refreshBody();
-      platforms.create(800, 1150, 'ground').setScale(1).refreshBody();
-      platforms.create(1000, 1000, 'ground').setScale(1).refreshBody();
+      platforms.create(800, 1000, 'ground').setScale(1).refreshBody();
+      platforms.create(1000, 900, 'ground').setScale(1).refreshBody();
 
       const player = this.physics.add.sprite(100, 600, 'dude'); // Move player down
 
@@ -97,6 +97,13 @@ window.onload = function () {
           player.setVelocityY(-330);
         }
       });
+
+      // Initialize score text
+      this.scoreText = this.add.text(16, 16, 'Score: 0', {
+        fontSize: '32px',
+        fill: '#ffffff'
+      });
+
     }
 
     // Function to collect a star
@@ -104,6 +111,7 @@ window.onload = function () {
       if (star.active) { // Check if star is still active
         star.disableBody(true, true); // Remove the star from the scene
         this.score += 10; // Update the score
+        this.scoreText.setText('Score: ' + this.score); // Update displayed score
         console.log('Score:', this.score); // Output score to console
       }
     }
