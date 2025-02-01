@@ -10,20 +10,24 @@ window.onload = function () {
       this.load.image('ground', 'assets/Platform.png'); // Ground
       this.load.image('star', 'assets/coin.png'); // Star collectible
       this.load.spritesheet('dude', 'assets/girl.jpeg', { frameWidth: 50, frameHeight: 50 }); // Player sprite
-
+      // Load button images
+      this.load.image('leftButton', 'assets/left.png'); // Left button image
+      this.load.image('rightButton', 'assets/right.png'); // Right button image
+      this.load.image('jumpButton', 'assets/jump.png'); // Jump button image
     }
 
     create() {
       this.add.image(400, 300, 'sky');
 
       const platforms = this.physics.add.staticGroup();
-      platforms.create(200, 700, 'ground').setScale(1).refreshBody();
-      platforms.create(400, 550, 'ground').setScale(1).refreshBody();
-      platforms.create(600, 400, 'ground').setScale(1).refreshBody();
-      platforms.create(800, 250, 'ground').setScale(1).refreshBody();
-      platforms.create(1000, 100, 'ground').setScale(1).refreshBody();
+      // Adjust these y-coordinates to move platforms down
+      platforms.create(200, 1600, 'ground').setScale(1).refreshBody();
+      platforms.create(400, 1450, 'ground').setScale(1).refreshBody();
+      platforms.create(600, 1200, 'ground').setScale(1).refreshBody();
+      platforms.create(800, 1150, 'ground').setScale(1).refreshBody();
+      platforms.create(1000, 1000, 'ground').setScale(1).refreshBody();
 
-      const player = this.physics.add.sprite(100, 450, 'dude');
+      const player = this.physics.add.sprite(100, 600, 'dude'); // Move player down
 
       player.setBounce(0.5);
       //player.setCollideWorldBounds(true);
@@ -68,6 +72,31 @@ window.onload = function () {
           player.setVelocityY(-330);
         }
       });
+
+      // Create on-screen controls using images
+      const leftButton = this.add.sprite(50, 550, 'leftButton').setInteractive();
+      const rightButton = this.add.sprite(150, 550, 'rightButton').setInteractive();
+      const jumpButton = this.add.sprite(100, 650, 'jumpButton').setInteractive();
+
+      leftButton.on('pointerdown', () => {
+        player.setVelocityX(-160);
+      });
+      leftButton.on('pointerup', () => {
+        player.setVelocityX(0);
+      });
+
+      rightButton.on('pointerdown', () => {
+        player.setVelocityX(160);
+      });
+      rightButton.on('pointerup', () => {
+        player.setVelocityX(0);
+      });
+
+      jumpButton.on('pointerdown', () => {
+        if (player.body.touching.down) { // Ensure the character is on the ground
+          player.setVelocityY(-330);
+        }
+      });
     }
 
     // Function to collect a star
@@ -84,11 +113,14 @@ window.onload = function () {
     }
 
   }
+  const aspectRatio = 16 / 9; // Setting aspect ratio to 16:9
+  const targetWidth = window.innerWidth * 0.9;
+  const targetHeight = targetWidth * aspectRatio;
 
   const config = {
     type: Phaser.AUTO,
-    width: window.innerWidth * 0.9,
-    height: window.innerHeight * 0.9,
+    width: targetWidth,
+    height: targetHeight,
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
