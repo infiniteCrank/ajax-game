@@ -156,7 +156,7 @@ window.onload = function () {
           ];
 
           // Create the ramp with a custom shape
-          const rampBody = this.matter.bodies.fromVertices(300, 750, rampVertices, {
+          const rampBody = this.matter.bodies.fromVertices(350, 750, rampVertices, {
             isStatic: true,
             friction: 0.8, // Adjust friction as necessary
           });
@@ -171,21 +171,25 @@ window.onload = function () {
           graphics.beginPath();
 
           // Move to the first vertex and draw the triangle
-          graphics.moveTo(rampVertices[0].x, rampVertices[0].y + 310); //top 
-          graphics.lineTo(rampVertices[1].x, rampVertices[1].y + 310); //bl
-          graphics.lineTo(rampVertices[2].x, rampVertices[2].y + 310); //br
+          graphics.moveTo(rampVertices[0].x + 50, rampVertices[0].y + 310); //top 
+          graphics.lineTo(rampVertices[1].x + 50, rampVertices[1].y + 310); //bl
+          graphics.lineTo(rampVertices[2].x + 50, rampVertices[2].y + 310); //br
           graphics.closePath();
           graphics.fillPath();
 
           //************************************************* */
+          this.wand = this.matter.add.sprite(100, 750, 'wand').setStatic(true).setScale(1);
 
           break;
 
         case 3:
           console.log('got to level 3');
+          this.ground.push(this.matter.add.sprite(900, 550, 'ground').setStatic(true).setScale(1));
+          this.wand = this.matter.add.sprite(800, 400, 'wand').setStatic(true).setScale(1);
           break;
         case 4:
           console.log('got to level 4');
+          this.ground.push(this.matter.add.sprite(300, 1000, 'ground').setStatic(true).setScale(1));
           break;
         default:
           console.log('hit default');
