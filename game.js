@@ -20,9 +20,16 @@ window.onload = function () {
       this.load.image('jumpButton', 'assets/jump.png'); // Jump button image
       //obsticals 
       this.load.image('ramp', 'assets/ramp.png'); // Jump button image
+
+      this.load.audio('collectSound', 'assets/bubble_game_sfx_wandcollection.mp3');
+      this.load.audio('jumpSound', 'assets/bubble_game_sfx_jump.mp3');
+      this.load.audio('backgroundMusic', 'assets/bubble_game_music_floatonby_v02.mp3');
     }
 
     create() {
+      // Play the background music on loop
+      const music = this.sound.add('backgroundMusic', { loop: true });
+      music.play();
       this.add.image(400, 300, 'sky');
       this.ramps = [];
       this.ground = [];
@@ -69,7 +76,7 @@ window.onload = function () {
 
       // Add the player
       this.player = this.matter.add.sprite(200, 450, 'dude').play('idle');
-      this.player.setBounce(1);
+      this.player.setBounce(0.8);
 
       // Initialize score text
       this.scoreText = this.add.text(16, 16, 'Score: 0', {
@@ -90,9 +97,9 @@ window.onload = function () {
       });
 
       // Create on-screen controls using images
-      const leftButton = this.matter.add.sprite(50, 1200, 'leftButton').setInteractive().setStatic(true);
+      const leftButton = this.matter.add.sprite(100, 1200, 'leftButton').setInteractive().setStatic(true);
       const rightButton = this.matter.add.sprite(800, 1200, 'rightButton').setInteractive().setStatic(true);
-      const jumpButton = this.matter.add.sprite(200, 1200, 'jumpButton').setInteractive().setStatic(true);
+      const jumpButton = this.matter.add.sprite(250, 1200, 'jumpButton').setInteractive().setStatic(true);
       leftButton.on('pointerdown', () => {
         this.player.setVelocityX(-5);
       });
@@ -190,6 +197,8 @@ window.onload = function () {
         this.player.setVelocityY(-11); // Jump strength
         this.player.play('jump', true); // Play jump animation
         this.isOnGround = false; // Set this to false immediately upon jumping
+        const sound = this.sound.add('jumpSound');
+        sound.play();
       }
     }
 
@@ -200,6 +209,8 @@ window.onload = function () {
       this.score += 10; // Update the score
       this.scoreText.setText('Score: ' + this.score); // Update displayed score
       console.log('Score:', this.score); // Output score to console
+      const sound = this.sound.add('collectSound');
+      sound.play();
     }
 
     nextLevel() {
