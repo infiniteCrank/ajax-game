@@ -1,7 +1,6 @@
 package main
 
 import (
-	"ajax-bubble-game/auth"
 	"database/sql"
 	"encoding/json"
 	"log"
@@ -83,7 +82,6 @@ func main() {
 	db := initDB()
 	defer db.Close()
 	http.Handle("/", http.FileServer(http.Dir("./public"))) // Serve client files
-	http.HandleFunc("POST /login", auth.LoginHandler)
 	http.HandleFunc("POST /save", saveLevel(db))
 	http.HandleFunc("GET /load", getLevel(db))
 	log.Println("Server started on :8080")
