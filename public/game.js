@@ -11,6 +11,8 @@ window.onload = function () {
       this.load.image('ground', 'assets/platform_real.png'); // Ground
       this.load.image('wand', 'assets/wand.png'); // Star collectible
       this.load.spritesheet('dude', 'assets/ajax_idle_run.png', { frameWidth: 100, frameHeight: 100 }); // Player sprite
+      this.load.spritesheet('dudeWin', 'assets/ajax_win.png', { frameWidth: 100, frameHeight: 100 }); // Player sprite
+      this.load.spritesheet('dudeJump', 'assets/ajax_jump.png', { frameWidth: 100, frameHeight: 100 }); // Player sprite
       // Load button images
       this.load.image('leftButton', 'assets/left.png'); // Left button image
       this.load.image('rightButton', 'assets/right.png'); // Right button image
@@ -48,6 +50,20 @@ window.onload = function () {
         key: 'idle',
         frames: [{ key: 'dude', frame: 2 }], // The idle frame is the third frame
         frameRate: 10
+      });
+
+      this.anims.create({
+        key: 'win',
+        frames: [{ key: 'dudeWin', frame: 0 }],
+        frameRate: 10
+      });
+
+      // Define animations for the player
+      this.anims.create({
+        key: 'jump',
+        frames: this.anims.generateFrameNames('dudeJump', { start: 0, end: 1 }),
+        frameRate: 2,
+        repeat: -1 // Repeat indefinitely
       });
 
       // Add the player
@@ -135,6 +151,11 @@ window.onload = function () {
 
     update() {
       // Update player animation based on velocity
+      if (!this.isOnGround) {
+        // Player is in the air, so the jump animation has already been played
+        return; // Don't change the animation
+      }
+
       if (this.player.body.velocity.x < 0) {
         this.player.play('run-left', true); // Play left run animation when moving left
       } else if (this.player.body.velocity.x > 0) {
@@ -147,11 +168,14 @@ window.onload = function () {
     jump() {
       if (this.isOnGround) { // Check if the player is on the ground before jumping
         this.player.setVelocityY(-11); // Jump strength
+        this.player.play('jump', true); // Play jump animation
+        this.isOnGround = false; // Set this to false immediately upon jumping
       }
     }
 
     // Function to collect the wand
     collectWand() {
+      this.player.play('win', true);
       this.wand.destroy();
       this.score += 10; // Update the score
       this.scoreText.setText('Score: ' + this.score); // Update displayed score
