@@ -45,6 +45,28 @@ window.onload = function () {
         fill: '#ffffff'
       });
 
+      // Create on-screen controls using images
+      const leftButton = this.matter.add.sprite(50, 1200, 'leftButton').setInteractive().setStatic(true);
+      const rightButton = this.matter.add.sprite(800, 1200, 'rightButton').setInteractive().setStatic(true);
+      const jumpButton = this.matter.add.sprite(200, 1200, 'jumpButton').setInteractive().setStatic(true);
+      leftButton.on('pointerdown', () => {
+        this.player.setVelocityX(-5);
+      });
+      leftButton.on('pointerup', () => {
+        this.player.setVelocityX(0);
+      });
+
+      rightButton.on('pointerdown', () => {
+        this.player.setVelocityX(5);
+      });
+      rightButton.on('pointerup', () => {
+        this.player.setVelocityX(0);
+      });
+
+      jumpButton.on('pointerdown', () => {
+        this.jump()
+      });
+
       // Player movement controls
       this.input.keyboard.on('keydown-LEFT', () => {
         this.player.setVelocityX(-5);
