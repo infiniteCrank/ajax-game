@@ -132,7 +132,6 @@ window.onload = function () {
       console.log('Score:', this.score); // Output score to console
     }
 
-
     nextLevel() {
       // Remove all ground platforms
       this.ground.forEach(platform => {
