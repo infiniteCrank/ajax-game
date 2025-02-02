@@ -97,6 +97,8 @@ window.onload = function () {
           if ((pair.bodyA === this.player.body && pair.bodyB === this.wand.body) ||
             (pair.bodyB === this.player.body && pair.bodyA === this.wand.body)) {
             this.collectWand(); // Call function to collect wand
+            this.level++
+            this.nextLevel()
           }
         });
       });
@@ -132,12 +134,16 @@ window.onload = function () {
 
 
     nextLevel() {
+      // Remove all ground platforms
+      this.ground.forEach(platform => {
+        platform.destroy();
+      });
+      this.ground = []; // Clear the ground array as platforms are destroyed
+
       const level = this.level;
       switch (level) {
         case 2:
           console.log('got to level 2');
-          this.platforms.create(200, 1450, 'ground').setScale(1).refreshBody();
-          this.platforms.create(800, 1450, 'ramp').setScale(1).refreshBody()
 
           break;
         case 3:
