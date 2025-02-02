@@ -29,8 +29,29 @@ window.onload = function () {
       this.ground.push(this.matter.add.sprite(900, 550, 'ground').setStatic(true).setScale(1));
       this.wand = this.matter.add.sprite(800, 400, 'wand').setStatic(true).setScale(1);
 
+      // Define animations for the player
+      this.anims.create({
+        key: 'run-left',
+        frames: this.anims.generateFrameNames('dude', { start: 0, end: 1 }),
+        frameRate: 5,
+        repeat: -1 // Repeat indefinitely
+      });
+
+      this.anims.create({
+        key: 'run-right',
+        frames: this.anims.generateFrameNames('dude', { start: 0, end: 1 }),
+        frameRate: 5,
+        repeat: -1
+      });
+
+      this.anims.create({
+        key: 'idle',
+        frames: [{ key: 'dude', frame: 2 }], // The idle frame is the third frame
+        frameRate: 10
+      });
+
       // Add the player
-      this.player = this.matter.add.sprite(200, 450, 'dude');
+      this.player = this.matter.add.sprite(200, 450, 'dude').play('idle');
       this.player.setBounce(1);
 
       // Initialize score text
@@ -113,7 +134,14 @@ window.onload = function () {
     }
 
     update() {
-
+      // Update player animation based on velocity
+      if (this.player.body.velocity.x < 0) {
+        this.player.play('run-left', true); // Play left run animation when moving left
+      } else if (this.player.body.velocity.x > 0) {
+        this.player.play('run-right', true); // Play right run animation when moving right (you'll need to create this animation too)
+      } else {
+        this.player.play('idle', true); // Play idle animation when not moving
+      }
     }
 
     jump() {
