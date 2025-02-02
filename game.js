@@ -77,7 +77,7 @@ window.onload = function () {
 
       // Add the player
       this.player = this.matter.add.sprite(200, 450, 'dude').play('idle');
-      this.player.setBounce(0.8);
+      this.player.setBounce(0.9);
 
       // Initialize score text
       this.scoreText = this.add.text(16, 16, 'Score: 0', {
@@ -425,14 +425,14 @@ window.onload = function () {
     }
   }
 
-  const aspectRatio = 9 / 16; // Setting aspect ratio to 9:16
-  const targetWidth = window.innerWidth * 0.9;
-  const targetHeight = targetWidth * aspectRatio;
+  // const aspectRatio = 9 / 16; // Setting aspect ratio to 9:16
+  // const targetWidth = window.innerWidth * 0.9;
+  // const targetHeight = targetWidth * aspectRatio;
 
   const config = {
     type: Phaser.AUTO,
-    width: targetWidth,
-    height: targetHeight,
+    width: 360,
+    height: 640,
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
