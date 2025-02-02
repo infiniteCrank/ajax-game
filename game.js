@@ -338,22 +338,21 @@ window.onload = function () {
     }
 
     preload() {
-      this.load.image('creditsBackground', 'assets/bg.png'); // Load your credits background image
+      this.load.image('creditsBackground', 'assets/credits_page.png'); // Load your credits background image
+      this.load.image('backButton', 'assets/back_arrow.png'); // Start button
     }
 
     create() {
-      this.add.image(400, 300, 'creditsBackground'); // Add background image for credits
+      this.add.image(450, 810, 'creditsBackground'); // Add background image for credits
 
-      // Add text for credits
-      this.add.text(100, 100, 'Game Credits', { fontSize: '48px', fill: '#ffffff' });
-      this.add.text(100, 200, 'Developed by: Julian Duran', { fontSize: '32px', fill: '#ffffff' });
-      this.add.text(100, 300, 'Music by: Mark Diaz', { fontSize: '32px', fill: '#ffffff' });
-      this.add.text(100, 400, 'Art by: Cherry Potato', { fontSize: '32px', fill: '#ffffff' });
+      // Create start button
+      const backButton = this.add.sprite(150, 1200, 'backButton').setInteractive();
 
-      // Create back button to return to the title screen
-      const backButton = this.add.text(400, 600, 'Back to Title', { fontSize: '32px', fill: '#ffffff' })
-        .setInteractive()
-        .on('pointerdown', () => this.scene.start('TitleScreen')); // Switch back to TitleScreen
+      // Handle button click to start the game
+      backButton.on('pointerdown', () => {
+        this.scene.start('TitleScreen'); // Switch to the game scene
+      });
+
     }
   }
 
