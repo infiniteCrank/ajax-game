@@ -9,7 +9,7 @@ window.onload = function () {
     preload() {
       this.load.image('sky', 'assets/bg.png'); // Background
       this.load.image('ground', 'assets/platform_real.png'); // Ground
-      this.load.image('star', 'assets/wand.png'); // Star collectible
+      this.load.image('wand', 'assets/wand.png'); // Star collectible
       this.load.spritesheet('dude', 'assets/ajax_idle_run.png', { frameWidth: 100, frameHeight: 100 }); // Player sprite
       // Load button images
       this.load.image('leftButton', 'assets/left.png'); // Left button image
@@ -22,11 +22,28 @@ window.onload = function () {
     create() {
       this.add.image(400, 300, 'sky');
 
-      this.ground = this.matter.add.sprite(400, 1000, 'ground').setStatic(true).setScale(1);
+      this.ground = []
+      this.ground.push(this.matter.add.sprite(300, 1000, 'ground').setStatic(true).setScale(1));
+      this.ground.push(this.matter.add.sprite(500, 850, 'ground').setStatic(true).setScale(1));
+      this.ground.push(this.matter.add.sprite(700, 700, 'ground').setStatic(true).setScale(1));
+      this.ground.push(this.matter.add.sprite(900, 550, 'ground').setStatic(true).setScale(1));
+      this.wand = this.matter.add.sprite(800, 400, 'wand').setStatic(true).setScale(1);
 
       // Add the player
-      this.player = this.matter.add.sprite(400, 450, 'dude');
-      this.player.setBounce(0.2);
+      this.player = this.matter.add.sprite(200, 450, 'dude');
+      this.player.setBounce(1);
+
+      // Initialize score text
+      this.scoreText = this.add.text(16, 16, 'Score: 0', {
+        fontSize: '32px',
+        fill: '#ffffff'
+      });
+
+      // Initialize score text
+      this.levelText = this.add.text(200, 16, 'Level: 1', {
+        fontSize: '32px',
+        fill: '#ffffff'
+      });
 
       // Player movement controls
       this.input.keyboard.on('keydown-LEFT', () => {
@@ -54,6 +71,11 @@ window.onload = function () {
           if (pair.bodyA === this.player.body || pair.bodyB === this.player.body) {
             this.isOnGround = true; // Player is on a platform
           }
+          // Check for wand collection
+          if ((pair.bodyA === this.player.body && pair.bodyB === this.wand.body) ||
+            (pair.bodyB === this.player.body && pair.bodyA === this.wand.body)) {
+            this.collectWand(); // Call function to collect wand
+          }
         });
       });
 
@@ -64,7 +86,6 @@ window.onload = function () {
           }
         });
       });
-
     }
 
     update() {
@@ -73,19 +94,20 @@ window.onload = function () {
 
     jump() {
       if (this.isOnGround) { // Check if the player is on the ground before jumping
-        this.player.setVelocityY(-10); // Jump strength
+        this.player.setVelocityY(-11); // Jump strength
       }
     }
 
-    // Function to collect a star
-    collectStar(player, star) {
-      if (star.active) { // Check if star is still active
-        star.disableBody(true, true); // Remove the star from the scene
-        this.score += 10; // Update the score
-        this.scoreText.setText('Score: ' + this.score); // Update displayed score
-        console.log('Score:', this.score); // Output score to console
-      }
+    // Function to collect the wand
+    collectWand() {
+      this.wand.setStatic(false); // Make it non-static to allow for proper control
+      this.wand.setVisible(false); // Hide the wand from the scene
+      this.wand.body.enable = false; // Disable the body to prevent further collisions
+      this.score += 10; // Update the score
+      this.scoreText.setText('Score: ' + this.score); // Update displayed score
+      console.log('Score:', this.score); // Output score to console
     }
+
 
     nextLevel() {
       const level = this.level;
