@@ -21,8 +21,8 @@ window.onload = function () {
 
     create() {
       this.add.image(400, 300, 'sky');
-
-      this.ground = []
+      this.ramps = [];
+      this.ground = [];
       this.ground.push(this.matter.add.sprite(300, 1000, 'ground').setStatic(true).setScale(1));
       this.ground.push(this.matter.add.sprite(500, 850, 'ground').setStatic(true).setScale(1));
       this.ground.push(this.matter.add.sprite(700, 700, 'ground').setStatic(true).setScale(1));
@@ -124,9 +124,7 @@ window.onload = function () {
 
     // Function to collect the wand
     collectWand() {
-      this.wand.setStatic(false); // Make it non-static to allow for proper control
-      this.wand.setVisible(false); // Hide the wand from the scene
-      this.wand.body.enable = false; // Disable the body to prevent further collisions
+      this.wand.destroy();
       this.score += 10; // Update the score
       this.scoreText.setText('Score: ' + this.score); // Update displayed score
       console.log('Score:', this.score); // Output score to console
@@ -140,14 +138,49 @@ window.onload = function () {
       this.ground = []; // Clear the ground array as platforms are destroyed
 
       const level = this.level;
-      console.log("Level: " + level)
       this.levelText.setText('Level: ' + this.level); // Update displayed score
       switch (level) {
         case 2:
           console.log('got to level 2');
           this.ground.push(this.matter.add.sprite(500, 850, 'ground').setStatic(true).setScale(1));
 
+          //*********************************** 
+          // ramp code :(((((||||||))))):
+          // ***********************************/
+
+          // Define the vertices for the ramp's right triangle shape
+          const rampVertices = [
+            { x: 450, y: 300 },      // Top Left
+            { x: 0, y: 500 }, // Bottom Left
+            { x: 450, y: 500 }  // Bottom Right
+          ];
+
+          // Create the ramp with a custom shape
+          const rampBody = this.matter.bodies.fromVertices(300, 750, rampVertices, {
+            isStatic: true,
+            friction: 0.8, // Adjust friction as necessary
+          });
+
+          // Add the custom ramp body to the world
+          this.matter.world.add(rampBody);
+          this.ramps.push(rampBody); // Store the ramp body if needed
+
+          // Draw the ramp using Phaser's graphics
+          const graphics = this.add.graphics();
+          graphics.fillStyle(0xF56FFF); // Green color to fill the triangle
+          graphics.beginPath();
+
+          // Move to the first vertex and draw the triangle
+          graphics.moveTo(rampVertices[0].x, rampVertices[0].y + 310); //top 
+          graphics.lineTo(rampVertices[1].x, rampVertices[1].y + 310); //bl
+          graphics.lineTo(rampVertices[2].x, rampVertices[2].y + 310); //br
+          graphics.closePath();
+          graphics.fillPath();
+
+          //************************************************* */
+
           break;
+
         case 3:
           console.log('got to level 3');
           break;
@@ -182,9 +215,14 @@ window.onload = function () {
     },
     physics: {
       default: 'matter',
-      arcade: {
-        gravity: { y: 300 },
-        debug: false
+      matter: {
+        debug: {
+          showBody: true,       // Show the outlines for the bodies
+          showStaticBody: true, // Show outlines for static bodies
+          showConvexHulls: true, // Show convex hulls related to bodies
+          fillStyle: 'rgb(255, 217, 0)', // Fill color for bodies
+          strokeStyle: 'rgba(255,0,0,1)', // Border color for bodies
+        }
       }
     },
     scene: AjaxGame,
