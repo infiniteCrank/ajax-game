@@ -366,9 +366,9 @@ window.onload = function () {
       default: 'matter',
       matter: {
         debug: {
-          showBody: true,       // Show the outlines for the bodies
-          showStaticBody: true, // Show outlines for static bodies
-          showConvexHulls: true, // Show convex hulls related to bodies
+          showBody: false,       // Show the outlines for the bodies
+          showStaticBody: false, // Show outlines for static bodies
+          showConvexHulls: false, // Show convex hulls related to bodies
           fillStyle: 'rgb(255, 217, 0)', // Fill color for bodies
           strokeStyle: 'rgba(255,0,0,1)', // Border color for bodies
         }
