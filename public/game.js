@@ -249,6 +249,43 @@ window.onload = function () {
 
       // Create credit button
       const creditsButton = this.add.sprite(420, 800, 'creditsButton').setInteractive();
+      // Handle button click to show credits
+      creditsButton.on('pointerdown', () => {
+        this.scene.start('CreditsScreen'); // Switch to the credits scene
+      });
+
+      // Adjust pointer feedback
+      creditsButton.on('pointerover', () => {
+        creditsButton.setTint(0x78c457); // Change color on hover
+      });
+      creditsButton.on('pointerout', () => {
+        creditsButton.clearTint(); // Reset color when no longer hovering
+      });
+    }
+  }
+
+  class CreditsScreen extends Phaser.Scene {
+    constructor() {
+      super({ key: "CreditsScreen" });
+    }
+
+    preload() {
+      this.load.image('creditsBackground', 'assets/bg.png'); // Load your credits background image
+    }
+
+    create() {
+      this.add.image(400, 300, 'creditsBackground'); // Add background image for credits
+
+      // Add text for credits
+      this.add.text(100, 100, 'Game Credits', { fontSize: '48px', fill: '#ffffff' });
+      this.add.text(100, 200, 'Developed by: Julian Duran', { fontSize: '32px', fill: '#ffffff' });
+      this.add.text(100, 300, 'Music by: Mark Diaz', { fontSize: '32px', fill: '#ffffff' });
+      this.add.text(100, 400, 'Art by: Cherry Potato', { fontSize: '32px', fill: '#ffffff' });
+
+      // Create back button to return to the title screen
+      const backButton = this.add.text(400, 600, 'Back to Title', { fontSize: '32px', fill: '#ffffff' })
+        .setInteractive()
+        .on('pointerdown', () => this.scene.start('TitleScreen')); // Switch back to TitleScreen
     }
   }
 
@@ -280,7 +317,7 @@ window.onload = function () {
         }
       }
     },
-    scene: [TitleScreen, AjaxGame], // Include both scenes
+    scene: [TitleScreen, AjaxGame, CreditsScreen], // Include both scenes
   };
 
   // Start the Phaser game
