@@ -11,6 +11,7 @@ window.onload = function () {
       this.load.image('sky', 'assets/bg.png'); // Background
       this.load.image('ground', 'assets/platform_real.png'); // Ground
       this.load.image('wand', 'assets/wand.png'); // Star collectible
+      this.load.image('winWand', 'assets/win_wand.png'); // Star collectible
       this.load.spritesheet('dude', 'assets/ajax_idle_run.png', { frameWidth: 100, frameHeight: 100 }); // Player sprite
       this.load.spritesheet('dudeWin', 'assets/ajax_win.png', { frameWidth: 100, frameHeight: 100 }); // Player sprite
       this.load.spritesheet('dudeJump', 'assets/ajax_jump.png', { frameWidth: 100, frameHeight: 100 }); // Player sprite
@@ -151,6 +152,14 @@ window.onload = function () {
             this.level++
             this.nextLevel()
           }
+
+          // Check for collision with winWand
+          if (this.winWand) {
+            if ((pair.bodyA === this.player.body && pair.bodyB === this.winWand.body) ||
+              (pair.bodyB === this.player.body && pair.bodyA === this.winWand.body)) {
+              this.scene.start('VictoryScreen'); // Transition to victory scene
+            }
+          }
         });
       });
 
@@ -173,7 +182,10 @@ window.onload = function () {
         // Check if out of lives
         if (this.lives <= 0) {
           console.log('Game Over'); // Handle game over here
-          // Optionally, add a game over scene or restart
+          this.lives = 3;
+          this.level = 1;
+          this.score = 0;
+          this.scene.start('GameOverScreen'); // Transition to game over scene
         }
       }
 
@@ -272,11 +284,12 @@ window.onload = function () {
           break;
         case 4:
           console.log('got to level 4');
-          this.ground.push(this.matter.add.sprite(800, 1000, 'ground').setStatic(true).setScale(1));
+          this.ground.push(this.matter.add.sprite(700, 900, 'ground').setStatic(true).setScale(1));
+          this.winWand = this.matter.add.sprite(100, 750, 'winWand').setStatic(true).setScale(1);
           break;
         default:
           console.log('hit default');
-          this.ground.push(this.matter.add.sprite(800, 1000, 'ground').setStatic(true).setScale(1));
+          this.ground.push(this.matter.add.sprite(700, 900, 'ground').setStatic(true).setScale(1));
           break;
       }
     }
@@ -356,6 +369,56 @@ window.onload = function () {
     }
   }
 
+  class VictoryScreen extends Phaser.Scene {
+    constructor() {
+      super({ key: "VictoryScreen" });
+    }
+
+    preload() {
+      this.load.image('victoryBackground', 'assets/victory_background.png'); // Load your victory background image
+    }
+
+    create() {
+      this.add.image(450, 810, 'victoryBackground'); // Add background image for victory
+
+      const restartButton = this.add.text(450, 600, 'Restart', { fontSize: '32px', fill: '#ffffff' }).setInteractive();
+      restartButton.on('pointerdown', () => {
+        this.scene.start('AjaxGame'); // Restart the game
+      });
+
+      restartButton.on('pointerover', () => {
+        restartButton.setStyle({ fill: '#ff0' }); // Change color on hover
+      });
+
+      restartButton.on('pointerout', () => {
+        restartButton.setStyle({ fill: '#ffffff' }); // Reset color when no longer hovering
+      });
+    }
+  }
+
+  class GameOverScreen extends Phaser.Scene {
+    constructor() {
+      super({ key: "GameOverScreen" });
+    }
+
+    preload() {
+      this.load.image('gameOverBackground', 'assets/death_screen_base.png'); // Load your game over background image
+      this.load.image('restartButton', 'assets/retry.png'); // Restart button
+    }
+
+    create() {
+      this.add.image(450, 810, 'gameOverBackground'); // Add background image for game over
+
+      // Create start button
+      const backButton = this.add.sprite(420, 800, 'restartButton').setInteractive();
+
+      // Handle button click to start the game
+      backButton.on('pointerdown', () => {
+        this.scene.start('TitleScreen'); // Switch to the game scene
+      });
+    }
+  }
+
   const aspectRatio = 16 / 9; // Setting aspect ratio to 16:9
   const targetWidth = window.innerWidth * 0.9;
   const targetHeight = targetWidth * aspectRatio;
@@ -384,7 +447,7 @@ window.onload = function () {
         }
       }
     },
-    scene: [TitleScreen, AjaxGame, CreditsScreen], // Include both scenes
+    scene: [TitleScreen, AjaxGame, CreditsScreen, VictoryScreen, GameOverScreen], // Include both scenes
   };
 
   // Start the Phaser game
