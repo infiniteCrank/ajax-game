@@ -4,6 +4,7 @@ window.onload = function () {
       super({ key: "AjaxGame" });
       this.score = 0; // Initialize score
       this.level = 1;
+      this.lives = 3;
     }
 
     preload() {
@@ -82,6 +83,12 @@ window.onload = function () {
         fill: '#ffffff'
       });
 
+      // Initialize lives text
+      this.lifeText = this.add.text(400, 16, 'Lives: 3', {
+        fontSize: '32px',
+        fill: '#ffffff'
+      });
+
       // Create on-screen controls using images
       const leftButton = this.matter.add.sprite(50, 1200, 'leftButton').setInteractive().setStatic(true);
       const rightButton = this.matter.add.sprite(800, 1200, 'rightButton').setInteractive().setStatic(true);
@@ -150,6 +157,19 @@ window.onload = function () {
     }
 
     update() {
+      // Check if player falls below y = height of the game
+      if (this.player.y > this.game.config.height) {
+        this.lives -= 1; // Subtract a life
+        this.lifeText.setText('Lives: ' + this.lives); // Update lives display
+        this.player.setPosition(200, 450); // Reset player position
+
+        // Check if out of lives
+        if (this.lives <= 0) {
+          console.log('Game Over'); // Handle game over here
+          // Optionally, add a game over scene or restart
+        }
+      }
+
       // Update player animation based on velocity
       if (!this.isOnGround) {
         // Player is in the air, so the jump animation has already been played
