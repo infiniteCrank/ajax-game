@@ -184,16 +184,16 @@ window.onload = function () {
 
         case 3:
           console.log('got to level 3');
-          this.ground.push(this.matter.add.sprite(900, 550, 'ground').setStatic(true).setScale(1));
-          this.wand = this.matter.add.sprite(800, 400, 'wand').setStatic(true).setScale(1);
+          this.ground.push(this.matter.add.sprite(900, 600, 'ground').setStatic(true).setScale(1));
+          this.wand = this.matter.add.sprite(800, 450, 'wand').setStatic(true).setScale(1);
           break;
         case 4:
           console.log('got to level 4');
-          this.ground.push(this.matter.add.sprite(300, 1000, 'ground').setStatic(true).setScale(1));
+          this.ground.push(this.matter.add.sprite(800, 1000, 'ground').setStatic(true).setScale(1));
           break;
         default:
           console.log('hit default');
-          this.ground.push(this.matter.add.sprite(300, 1000, 'ground').setStatic(true).setScale(1));
+          this.ground.push(this.matter.add.sprite(800, 1000, 'ground').setStatic(true).setScale(1));
           break;
       }
     }
