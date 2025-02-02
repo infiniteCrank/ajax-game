@@ -3,7 +3,7 @@ window.onload = function () {
     constructor() {
       super({ key: "AjaxGame" });
       this.score = 0; // Initialize score
-      this.level = 0;
+      this.level = 1;
     }
 
     preload() {
@@ -141,9 +141,12 @@ window.onload = function () {
       this.ground = []; // Clear the ground array as platforms are destroyed
 
       const level = this.level;
+      console.log("Level: " + level)
+      this.levelText.setText('Level: ' + this.level); // Update displayed score
       switch (level) {
         case 2:
           console.log('got to level 2');
+          this.ground.push(this.matter.add.sprite(500, 850, 'ground').setStatic(true).setScale(1));
 
           break;
         case 3:
@@ -154,6 +157,7 @@ window.onload = function () {
           break;
         default:
           console.log('hit default');
+          this.ground.push(this.matter.add.sprite(300, 1000, 'ground').setStatic(true).setScale(1));
           break;
       }
     }
