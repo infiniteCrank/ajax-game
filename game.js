@@ -425,14 +425,14 @@ window.onload = function () {
     }
   }
 
-  // const aspectRatio = 9 / 16; // Setting aspect ratio to 9:16
-  // const targetWidth = window.innerWidth * 0.9;
-  // const targetHeight = targetWidth * aspectRatio;
+  const aspectRatio = 9 / 16; // Setting aspect ratio to 9:16
+  const targetWidth = window.innerWidth * 0.9;
+  const targetHeight = targetWidth * aspectRatio;
 
   const config = {
     type: Phaser.AUTO,
-    width: 360,
-    height: 640,
+    width: targetWidth,
+    height: targetHeight,
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
