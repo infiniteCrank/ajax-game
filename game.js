@@ -29,8 +29,8 @@ window.onload = function () {
 
     create() {
       // Play the background music on loop
-      const music = this.sound.add('backgroundMusic', { loop: true });
-      music.play();
+      this.music = this.sound.add('backgroundMusic', { loop: true });
+      this.music.play();
       this.add.image(400, 300, 'sky');
       this.ramps = [];
       this.ground = [];
@@ -157,6 +157,7 @@ window.onload = function () {
           if (this.winWand) {
             if ((pair.bodyA === this.player.body && pair.bodyB === this.winWand.body) ||
               (pair.bodyB === this.player.body && pair.bodyA === this.winWand.body)) {
+              this.music.stop();
               this.scene.start('VictoryScreen'); // Transition to victory scene
             }
           }
@@ -185,6 +186,7 @@ window.onload = function () {
           this.lives = 3;
           this.level = 1;
           this.score = 0;
+          this.music.stop();
           this.scene.start('GameOverScreen'); // Transition to game over scene
         }
       }
@@ -375,24 +377,23 @@ window.onload = function () {
     }
 
     preload() {
-      this.load.image('victoryBackground', 'assets/victory_background.png'); // Load your victory background image
+      this.load.image('victoryBackground', 'assets/win_screen_base.png'); // Load your victory background image
+      this.load.image('restartButton', 'assets/retry.png'); // Restart button
+      this.load.audio('victoryMusic', 'assets/bubble_game_music_victory.mp3');
     }
 
     create() {
+      const music = this.sound.add('victoryMusic', { loop: true });
+      music.play();
       this.add.image(450, 810, 'victoryBackground'); // Add background image for victory
+      // Create start button
+      const backButton = this.add.sprite(420, 450, 'restartButton').setInteractive();
 
-      const restartButton = this.add.text(450, 600, 'Restart', { fontSize: '32px', fill: '#ffffff' }).setInteractive();
-      restartButton.on('pointerdown', () => {
-        this.scene.start('AjaxGame'); // Restart the game
+      // Handle button click to start the game
+      backButton.on('pointerdown', () => {
+        this.scene.start('TitleScreen'); // Switch to the game scene
       });
 
-      restartButton.on('pointerover', () => {
-        restartButton.setStyle({ fill: '#ff0' }); // Change color on hover
-      });
-
-      restartButton.on('pointerout', () => {
-        restartButton.setStyle({ fill: '#ffffff' }); // Reset color when no longer hovering
-      });
     }
   }
 
@@ -404,9 +405,12 @@ window.onload = function () {
     preload() {
       this.load.image('gameOverBackground', 'assets/death_screen_base.png'); // Load your game over background image
       this.load.image('restartButton', 'assets/retry.png'); // Restart button
+      this.load.audio('loseMusic', 'assets/bubble_game_music_death_02.mp3');
     }
 
     create() {
+      const music = this.sound.add('loseMusic', { loop: true });
+      music.play();
       this.add.image(450, 810, 'gameOverBackground'); // Add background image for game over
 
       // Create start button
