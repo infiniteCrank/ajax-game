@@ -200,6 +200,57 @@ window.onload = function () {
 
   }
 
+  class TitleScreen extends Phaser.Scene {
+    constructor() {
+      super({ key: "TitleScreen" });
+    }
+
+    preload() {
+      this.load.image('titleBackground', 'assets/bg.png'); // Background for title screen
+      this.load.image('titleBackground2', 'assets/paper.png'); // Background for title screen
+      this.load.image('titleBackground3', 'assets/paper_shade.png'); // Background for title screen
+      this.load.image('titleBackground4', 'assets/ajax.png'); // Background for title screen
+      this.load.image('titleBackground5', 'assets/ajax_shade.png'); // Background for title screen
+      this.load.image('titleBackground6', 'assets/title.png'); // Background for title screen
+      this.load.image('titleBackground7', 'assets/title_shade.png'); // Background for title screen
+      this.load.image('titleBackground8', 'assets/bubbles.png'); // Background for title screen
+      this.load.image('titleBackground9', 'assets/bubble_shade.png'); // Background for title screen
+      this.load.image('startButton', 'assets/start.png'); // Start button
+      this.load.image('creditsButton', 'assets/credits.png'); // Start button
+    }
+
+    create() {
+      // Add background
+      this.add.image(400, 300, 'titleBackground');
+      this.add.image(590, 990, 'titleBackground3')
+      this.add.image(600, 1000, 'titleBackground2');
+      this.add.image(590, 1190, 'titleBackground5');
+      this.add.image(600, 1200, 'titleBackground4');
+      this.add.image(410, 390, 'titleBackground7');
+      this.add.image(420, 400, 'titleBackground6');
+      this.add.image(410, 350, 'titleBackground9');
+      this.add.image(420, 360, 'titleBackground8');
+
+      // Create start button
+      const startButton = this.add.sprite(420, 600, 'startButton').setInteractive();
+
+      // Handle button click to start the game
+      startButton.on('pointerdown', () => {
+        this.scene.start('AjaxGame'); // Switch to the game scene
+      });
+
+      // Adjust pointer feedback
+      startButton.on('pointerover', () => {
+        startButton.setTint(0x78c457); // Change color on hover
+      });
+      startButton.on('pointerout', () => {
+        startButton.clearTint(); // Reset color when no longer hovering
+      });
+
+      // Create credit button
+      const creditsButton = this.add.sprite(420, 800, 'creditsButton').setInteractive();
+    }
+  }
 
   const aspectRatio = 16 / 9; // Setting aspect ratio to 16:9
   const targetWidth = window.innerWidth * 0.9;
@@ -229,7 +280,7 @@ window.onload = function () {
         }
       }
     },
-    scene: AjaxGame,
+    scene: [TitleScreen, AjaxGame], // Include both scenes
   };
 
   // Start the Phaser game
