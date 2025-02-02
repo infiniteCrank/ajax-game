@@ -383,14 +383,15 @@ window.onload = function () {
     }
 
     create() {
-      const music = this.sound.add('victoryMusic', { loop: true });
-      music.play();
+      this.music = this.sound.add('victoryMusic', { loop: true });
+      this.music.play();
       this.add.image(450, 810, 'victoryBackground'); // Add background image for victory
       // Create start button
       const backButton = this.add.sprite(420, 450, 'restartButton').setInteractive();
 
       // Handle button click to start the game
       backButton.on('pointerdown', () => {
+        this.music.stop();
         this.scene.start('TitleScreen'); // Switch to the game scene
       });
 
@@ -409,8 +410,8 @@ window.onload = function () {
     }
 
     create() {
-      const music = this.sound.add('loseMusic', { loop: true });
-      music.play();
+      this.music = this.sound.add('loseMusic', { loop: true });
+      this.music.play();
       this.add.image(450, 810, 'gameOverBackground'); // Add background image for game over
 
       // Create start button
@@ -418,6 +419,7 @@ window.onload = function () {
 
       // Handle button click to start the game
       backButton.on('pointerdown', () => {
+        this.music.stop();
         this.scene.start('TitleScreen'); // Switch to the game scene
       });
     }
