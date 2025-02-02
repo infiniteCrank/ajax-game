@@ -278,30 +278,15 @@ window.onload = function () {
     }
 
     preload() {
-      this.load.image('titleBackground', 'assets/bg.png'); // Background for title screen
-      this.load.image('titleBackground2', 'assets/paper.png'); // Background for title screen
-      this.load.image('titleBackground3', 'assets/paper_shade.png'); // Background for title screen
-      this.load.image('titleBackground4', 'assets/ajax.png'); // Background for title screen
-      this.load.image('titleBackground5', 'assets/ajax_shade.png'); // Background for title screen
-      this.load.image('titleBackground6', 'assets/title.png'); // Background for title screen
-      this.load.image('titleBackground7', 'assets/title_shade.png'); // Background for title screen
-      this.load.image('titleBackground8', 'assets/bubbles.png'); // Background for title screen
-      this.load.image('titleBackground9', 'assets/bubble_shade.png'); // Background for title screen
+      this.load.image('titleBackground', 'assets/start_screen_base.png'); // Background for title screen
       this.load.image('startButton', 'assets/start.png'); // Start button
       this.load.image('creditsButton', 'assets/credits.png'); // Start button
     }
 
     create() {
       // Add background
-      this.add.image(400, 300, 'titleBackground');
-      this.add.image(590, 990, 'titleBackground3')
-      this.add.image(600, 1000, 'titleBackground2');
-      this.add.image(590, 1190, 'titleBackground5');
-      this.add.image(600, 1200, 'titleBackground4');
-      this.add.image(410, 390, 'titleBackground7');
-      this.add.image(420, 400, 'titleBackground6');
-      this.add.image(410, 350, 'titleBackground9');
-      this.add.image(420, 360, 'titleBackground8');
+      this.add.image(450, 800, 'titleBackground');
+
 
       // Create start button
       const startButton = this.add.sprite(420, 600, 'startButton').setInteractive();
