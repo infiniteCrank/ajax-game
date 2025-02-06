@@ -425,7 +425,7 @@ window.onload = function () {
     }
   }
 
-  const aspectRatio = 9 / 16; // Setting aspect ratio to 9:16
+  const aspectRatio = 16 / 9; // Setting aspect ratio to 9:16
   const targetWidth = window.innerWidth * 0.9;
   const targetHeight = targetWidth * aspectRatio;
 
